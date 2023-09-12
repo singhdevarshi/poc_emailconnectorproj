@@ -33,6 +33,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 	"textmessage.txt": payload.message
 }]]]></email:attachments>
 				</email:send>
+				<logger level="INFO" doc:name="Logger" doc:id="6fb75f39-c427-44fe-b274-69451f944ab6" message="message send successfully"/>
 			</route>
 			<route >
 				<email:send doc:name="Send" doc:id="a4cbf204-9869-4bfd-9c10-5da481d24362" config-ref="Email_SMTP" subject="#[payload.subject]">
