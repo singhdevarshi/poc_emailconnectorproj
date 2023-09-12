@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:email="http://www.mulesoft.org/schema/mule/email"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/email http://www.mulesoft.org/schema/mule/email/current/mule-email.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd">
+	<email:smtp-config name="Email_SMTP" doc:name="Email SMTP" doc:id="d2e28542-6202-42f9-96b9-510ca245f608" >
+		<email:smtp-connection host="smtp.gmail.com" port="587" user="devarshi.singh99@gmail.com" password="akftuggaxupmmhck">
+			<email:properties >
+				<email:property key="mail.smtp.starttls.enable" value="true" />
+			</email:properties>
+		</email:smtp-connection>
+	</email:smtp-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e8efd1cd-de00-4feb-ad3c-6079d323c5ff" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="poc_emailconnectorprojFlow" doc:id="0969c7d1-2932-498a-878a-4345e328efea" >
+		<http:listener doc:name="Listener" doc:id="0beeb8bf-c30d-40e7-a8b0-0c7b8226033e" config-ref="HTTP_Listener_config" path="/email" allowedMethods="POST" />
+		<logger level="INFO" doc:name="Logger" doc:id="cbc2edf1-2a8d-4516-ba79-2ea427e11179" message="Ready for sender logger"/>
+		<scatter-gather doc:name="Scatter-Gather" doc:id="884e8946-d3c8-4d08-b769-ee61a42f08cb" >
+			<route >
+				<email:send doc:name="Send" doc:id="620d2674-bdbe-4cf1-b398-bf7db1de0101" config-ref="Email_SMTP" subject="#[payload.subject]">
+					<email:to-addresses>
+						<email:to-address value="theservicekartofficial@gmail.com" />
+					</email:to-addresses>
+					<email:cc-addresses />
+					<email:body contentType="text/plain" encoding="UTF-8" contentTransferEncoding="7BIT">
+						<email:content><![CDATA[#[payload.message]]]></email:content>
+					</email:body>
+					<email:attachments><![CDATA[#[{
+	"textmessage.txt": payload.message
+}]]]></email:attachments>
+				</email:send>
+			</route>
+			<route >
+				<email:send doc:name="Send" doc:id="a4cbf204-9869-4bfd-9c10-5da481d24362" config-ref="Email_SMTP" subject="#[payload.subject]">
+					<email:to-addresses>
+						<email:to-address value="rishudevarshi@gmail.com" />
+					</email:to-addresses>
+					<email:body contentType="text/plain" encoding="UTF-8">
+						<email:content><![CDATA[#[payload.message]]]></email:content>
+					</email:body>
+				</email:send>
+			</route>
+		</scatter-gather>
+		<logger level="INFO" doc:name="Logger" doc:id="cc0d96fc-df7b-4a4e-be07-1eee0352820e" message="Email Sent Successfully"/>
+	</flow>
+</mule>
