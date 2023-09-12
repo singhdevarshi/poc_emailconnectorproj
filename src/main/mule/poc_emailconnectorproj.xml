@@ -44,6 +44,7 @@ http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/
 						<email:content><![CDATA[#[payload.message]]]></email:content>
 					</email:body>
 				</email:send>
+				<logger level="INFO" doc:name="Logger" doc:id="21d7c11f-5273-4b75-8b08-198363f165ce" />
 			</route>
 		</scatter-gather>
 		<logger level="INFO" doc:name="Logger" doc:id="cc0d96fc-df7b-4a4e-be07-1eee0352820e" message="Email Sent Successfully"/>
